@@ -10,11 +10,6 @@ from pandas.io.json import json_normalize
 import json
 
 
-# In[2]:
-
-
-import json
-
 with open('laureates.json') as f:
     data = json.load(f)
 
@@ -36,12 +31,6 @@ df = pd.DataFrame(flat_data)
 # In[3]:
 
 
-df.columns
-
-
-# In[4]:
-
-
 def calculate_age(row):
     birth_date = str(row['birth_date'])
     death_date = str(row['death_date'])
@@ -53,9 +42,6 @@ def calculate_age(row):
         return None
 
 df['age'] = df.apply(calculate_age, axis=1)
-
-
-# In[5]:
 
 
 def extract_affiliation(row):
@@ -75,17 +61,10 @@ def extract_affiliation(row):
 df[['affiliation', 'affiliation_country']] = pd.DataFrame(df.apply(extract_affiliation, axis=1).tolist(), index=df.index)
 
 
-# In[6]:
-
-
 normalized_df = json_normalize(df['nobelPrizes'].explode())
 
 
 merged_df = df.join(normalized_df, rsuffix='_normalized')
-
-
-# In[ ]:
-
 
 
 
