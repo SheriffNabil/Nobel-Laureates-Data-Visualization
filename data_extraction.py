@@ -60,3 +60,6 @@ def calculate_age(row):
 
 df['age'] = df.apply(calculate_age, axis=1)
 
+
+df = df.filter(regex='^(?!.*(_se|_no)$).*$')
+
