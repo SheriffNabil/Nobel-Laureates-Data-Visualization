@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import pandas as pd
 from datetime import datetime
 from pandas.io.json import json_normalize
@@ -28,9 +22,41 @@ for d in data['laureates']:
 df = pd.DataFrame(flat_data)
 
 
-# In[3]:
+
+def lists_or_dict():
+    dict_list_cols = []
+    for col in df.columns:
+        if df[col].apply(lambda x: isinstance(x, dict) or isinstance(x, list)).any():
+            dict_list_cols.append(col)
+    return dict_list_cols
 
 
+lists_or_dict()
+
+
+def extract_lists_dicts():
+    dict_list_cols = []
+    for col in df.columns:
+        if df[col].apply(lambda x: isinstance(x, dict) or isinstance(x, list)).any():
+            if isinstance(df[col][0], dict):
+                for key in df[col][0].keys():
+                    new_col_name = col + '_' + key
+                    df[new_col_name] = df[col].apply(lambda x: x.get(key) if isinstance(x, dict) else None)
+                    dict_list_cols.append(new_col_name)
+            elif isinstance(df[col][0], list):
+                for i in range(len(df[col][0])):
+                    new_col_name = col + '_' + str(i)
+                    df[new_col_name] = df[col].apply(lambda x: x[i] if isinstance(x, list) and len(x) > i else None)
+                    dict_list_cols.append(new_col_name)
+                    
+                    
+                    
+for i in range(1,200):
+    extract_lists_dicts()
+    
+    
+    
+    
 def calculate_age(row):
     birth_date = str(row['birth_date'])
     death_date = str(row['death_date'])
@@ -42,29 +68,3 @@ def calculate_age(row):
         return None
 
 df['age'] = df.apply(calculate_age, axis=1)
-
-
-def extract_affiliation(row):
-    affiliation = None
-    affiliation_country = None
-    if 'nobelPrizes' in row:
-        for prize_info in row['nobelPrizes']:
-            if 'affiliations' in prize_info:
-                for affiliation_info in prize_info['affiliations']:
-                    affiliation = affiliation_info['nameNow']['en']
-                    if 'countryNow' in affiliation_info:
-                        affiliation_country = affiliation_info['countryNow']['en']
-                    else:
-                        affiliation_country = None
-    return (affiliation, affiliation_country)
-
-df[['affiliation', 'affiliation_country']] = pd.DataFrame(df.apply(extract_affiliation, axis=1).tolist(), index=df.index)
-
-
-normalized_df = json_normalize(df['nobelPrizes'].explode())
-
-
-merged_df = df.join(normalized_df, rsuffix='_normalized')
-
-
-
