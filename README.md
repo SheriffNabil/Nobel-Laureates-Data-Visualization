@@ -4,7 +4,7 @@
 
 Welcome to the *Visual History of Nobel Prize Laureates* project! This project leverages Python for data exploration, cleaning, and preprocessing of the comprehensive list of Nobel laureates, with data sourced from the official Nobel Prize API (https://api.nobelprize.org/2.1/laureates?limit=20000000) in JSON format. Our primary objective is to uncover valuable insights and trends from this rich dataset and present them through an interactive Tableau dashboard.
 
-**Tableau Dashboard: Nobel Laureates Data Visualization (https://public.tableau.com/app/profile/sherifnabil/viz/AVisualHistoryofNobelPrizeLaureantes/Main)**
+**Tableau Dashboard: [Nobel Laureates Data Visualization](https://public.tableau.com/app/profile/sherifnabil/viz/AVisualHistoryofNobelPrizeLaureantes/Main)**
 
 In this project, you will find:
 
