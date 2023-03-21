@@ -1,14 +1,14 @@
-import pandas as pd
-from datetime import datetime
-from pandas.io.json import json_normalize
 import json
+from datetime import datetime
+import pandas as pd
+
 
 
 with open('laureates.json') as f:
     data = json.load(f)
 
+# Flatten the JSON data
 flat_data = []
-
 for d in data['laureates']:
     flat_dict = {}
     for key, value in d.items():
@@ -19,44 +19,35 @@ for d in data['laureates']:
             flat_dict[key] = value
     flat_data.append(flat_dict)
 
+
 df = pd.DataFrame(flat_data)
 
 
-
-def lists_or_dict():
-    dict_list_cols = []
+def extract_nested_columns():
+    nested_cols = []
     for col in df.columns:
         if df[col].apply(lambda x: isinstance(x, dict) or isinstance(x, list)).any():
-            dict_list_cols.append(col)
-    return dict_list_cols
+            nested_cols.append(col)
+    return nested_cols
 
 
-lists_or_dict()
+def expand_nested_columns():
+    for col in extract_nested_columns():
+        sample_value = df[col][0]
+        if isinstance(sample_value, dict):
+            for key in sample_value.keys():
+                new_col_name = f"{col}_{key}"
+                df[new_col_name] = df[col].apply(lambda x: x.get(key) if isinstance(x, dict) else None)
+        elif isinstance(sample_value, list):
+            for i, _ in enumerate(sample_value):
+                new_col_name = f"{col}_{i}"
+                df[new_col_name] = df[col].apply(lambda x: x[i] if isinstance(x, list) and len(x) > i else None)
 
 
-def extract_lists_dicts():
-    dict_list_cols = []
-    for col in df.columns:
-        if df[col].apply(lambda x: isinstance(x, dict) or isinstance(x, list)).any():
-            if isinstance(df[col][0], dict):
-                for key in df[col][0].keys():
-                    new_col_name = col + '_' + key
-                    df[new_col_name] = df[col].apply(lambda x: x.get(key) if isinstance(x, dict) else None)
-                    dict_list_cols.append(new_col_name)
-            elif isinstance(df[col][0], list):
-                for i in range(len(df[col][0])):
-                    new_col_name = col + '_' + str(i)
-                    df[new_col_name] = df[col].apply(lambda x: x[i] if isinstance(x, list) and len(x) > i else None)
-                    dict_list_cols.append(new_col_name)
-                    
-                    
-                    
-for i in range(1,200):
-    extract_lists_dicts()
-    
-    
-    
-    
+for _ in range(200):
+    expand_nested_columns()
+
+
 def calculate_age(row):
     birth_date = str(row['birth_date'])
     death_date = str(row['death_date'])
@@ -68,3 +59,4 @@ def calculate_age(row):
         return None
 
 df['age'] = df.apply(calculate_age, axis=1)
+
