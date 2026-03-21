@@ -355,38 +355,7 @@ def _build_insights():
                 f"This 3D view makes the global concentration of prizes much more visceral than a flat map."
             ),
         },
-        "globe_category": {
-            "title": "What does the category globe show?",
-            "text": (
-                "This globe layers all six Nobel categories on top of each other using different colors. "
-                "Each dot is a country-category pair — so a country can have up to 6 dots in different colors. "
-                "Use the dropdown above to filter to a single category and see which countries dominate "
-                "in that specific field. For example, filtering to Physics reveals a strong US-Europe axis, "
-                "while Peace shows more geographic diversity. "
-                "Click and drag to rotate, scroll to zoom."
-            ),
-        },
-        "globe_timeline": {
-            "title": "How does this decade slider work?",
-            "text": (
-                "Drag the slider at the bottom to travel through time! Each position shows laureates "
-                "from a specific decade, color-coded by their prize category. "
-                "In the early 1900s, you'll see dots clustered in Europe. As decades progress, "
-                "notice how the US grows dominant and how prizes gradually spread to Asia, "
-                "Africa, and Latin America. The most recent decades show the most global distribution. "
-                "Hover over any dot to see the laureate's name, field, and year."
-            ),
-        },
-        "globe_connections": {
-            "title": "What do the arcs mean?",
-            "text": (
-                "The orange arcs connect the top 10 Nobel-producing countries that share prize categories. "
-                "Each arc means two countries both have winners in the same field. "
-                "The web of connections is dense between the US, UK, Germany, France, and Sweden — "
-                "reflecting the strong scientific collaboration axis between these nations. "
-                "Countries with fewer connections tend to specialize in fewer categories."
-            ),
-        },
+
     }
 
 
@@ -1097,69 +1066,8 @@ def _deep_tab():
     ])
 
 
-def _globe_tab():
-    _card_counter[0] = 500
-    return html.Div([
-        _chapter_intro(
-            "02",
-            "How does the world look from above?",
-            "Step into a 3D immersive view of Nobel Prize geography. Rotate the globe, "
-            "filter by category, animate through decades, and trace the arcs that connect "
-            "nations through shared fields of excellence.",
-        ),
 
-        # Main 3D globe
-        _wrap_card(
-            dcc.Graph(figure=viz.fig_globe_3d(DF), config={"scrollZoom": True}),
-            "01 / 3D Globe — All Prizes",
-            "globe_3d",
-        ),
 
-        # Category-filtered globe with dropdown
-        _wrap_card([
-            html.Div(style={
-                "display": "flex", "alignItems": "center", "gap": "16px",
-                "marginBottom": "12px",
-            }, children=[
-                html.Span("Filter by category:", style={
-                    "fontFamily": "'JetBrains Mono', monospace",
-                    "fontSize": "0.8rem", "color": "#666",
-                }),
-                dcc.Dropdown(
-                    id="globe-category-dropdown",
-                    options=[
-                        {"label": "All Categories", "value": "all"},
-                    ] + [{"label": c, "value": c} for c in CATEGORIES],
-                    value="all",
-                    clearable=False,
-                    style={
-                        "width": "280px",
-                        "fontFamily": "'JetBrains Mono', monospace",
-                        "fontSize": "0.85rem",
-                    },
-                ),
-            ]),
-            dcc.Graph(
-                id="globe-category-graph",
-                figure=viz.fig_globe_by_category(DF),
-                config={"scrollZoom": True},
-            ),
-        ], "02 / Category Globe", "globe_category"),
-
-        # Timeline globe with decade slider
-        _wrap_card(
-            dcc.Graph(figure=viz.fig_globe_timeline(DF), config={"scrollZoom": True}),
-            "03 / Decade Timeline Globe",
-            "globe_timeline",
-        ),
-
-        # Connection arcs globe
-        _wrap_card(
-            dcc.Graph(figure=viz.fig_globe_connections(DF), config={"scrollZoom": True}),
-            "04 / Country Connections",
-            "globe_connections",
-        ),
-    ])
 
 
 def _gallery_tab():
