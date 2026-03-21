@@ -1,4 +1,4 @@
-# 🏅 Nobel Prize Analytics Engine
+# Nobel Prize Analytics Engine
 
 > An interactive data analytics dashboard exploring **125 years of Nobel Prize history** (1901–2025) with 3D globe visualizations, machine learning models, and deep statistical analysis — powered by live data from the Nobel Prize API.
 
@@ -10,31 +10,31 @@
 
 ---
 
-## ✨ Features
+## Features
 
-### 📊 Six Interactive Dashboard Tabs
+### Six Interactive Dashboard Tabs
 
 | Tab | Description |
 |-----|-------------|
 | **Overview** | 3D interactive globe, cumulative timeline, category breakdown, top countries, and continental hierarchy |
 | **Demographics** | Gender distribution trends, age-at-award analysis (violin, scatter, histogram), lifespan statistics |
-| **Trends & Stats** | Category × decade heatmap, prize amount trends (inflation-adjusted), Sankey flows, treemaps, category trend lines |
+| **Trends & Stats** | Category x decade heatmap, prize amount trends (inflation-adjusted), Sankey flows, treemaps, category trend lines |
 | **Machine Learning** | K-Means clustering, Random Forest classification, NLP topic modeling, LSTM time-series forecasting |
 | **Deep Dive** | Correlation heatmap, OLS regression analysis, multi-prize laureates, and interactive exploration tools |
 | **Gallery** | Searchable laureate gallery with Wikipedia portrait images and biographical details |
 
-### 🌍 3D Globe Visualization
+### 3D Globe Visualization
 - Interactive orthographic globe with **real country coordinates**
 - Bubble markers sized by prize count with hover details
 - Drag-to-rotate, click-to-explore interaction
 
-### 🤖 Machine Learning Pipeline
+### Machine Learning Pipeline
 - **K-Means Clustering** — discovers latent patterns in laureate demographics
 - **Random Forest Classifier** — predicts prize category from features (with feature importance analysis)
 - **NLP Topic Modeling** — extracts themes from prize motivations using TF-IDF + NMF
 - **LSTM Neural Network** — forecasts future prize counts using PyTorch
 
-### 🎨 Design
+### Design
 - **MiroFish-inspired white theme** — clean monochrome with orange (#FF4500) accents
 - **JetBrains Mono** typography for data elements
 - Fully responsive layout with cross-browser compatibility (Chrome, Safari, Firefox)
@@ -42,7 +42,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -80,7 +80,7 @@ The app will launch at **http://localhost:8050**
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 Nobel-Laureates-Data-Visualization/
@@ -110,7 +110,7 @@ Nobel Prize API → data_loader.py → cleanup.py → analysis.py → ml_models.
 
 ---
 
-## 📈 Key Metrics
+## Key Metrics
 
 | Metric | Value |
 |--------|-------|
@@ -123,7 +123,7 @@ Nobel Prize API → data_loader.py → cleanup.py → analysis.py → ml_models.
 
 ---
 
-## 🛠️ Technical Details
+## Technical Details
 
 ### Live Data Ingestion
 The application fetches real-time data from the official Nobel Prize API on startup — no static CSV files or stale datasets. Laureate portraits are batch-fetched from Wikipedia, and nationalities are enriched via Wikidata SPARQL queries.
@@ -140,13 +140,13 @@ Every chart follows the **MiroFish white theme**: white background, black text, 
 
 ---
 
-## 📄 License
+## License
 
 This project is open-source under the [MIT License](LICENSE).
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [Nobel Prize API](https://www.nobelprize.org/about/developer-zone-2/) — official data source
 - [Wikipedia](https://www.wikipedia.org/) — laureate portraits
@@ -157,5 +157,5 @@ This project is open-source under the [MIT License](LICENSE).
 ---
 
 <p align="center">
-  Built with ❤️ by <a href="https://github.com/SheriffNabil">SheriffNabil</a>
+  Built by <a href="https://github.com/SheriffNabil">SheriffNabil</a>
 </p>
