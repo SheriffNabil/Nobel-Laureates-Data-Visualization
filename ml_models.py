@@ -31,11 +31,11 @@ def kmeans_clustering(df: pd.DataFrame, n_clusters: int = 5) -> dict:
     """
     persons = df[~df["is_org"]].dropna(subset=["age_at_award", "award_year"]).copy()
 
-    # Encode category
-    le = LabelEncoder()
-    persons["category_encoded"] = le.fit_transform(persons["category"])
+    # One-hot encode category
+    dummies = pd.get_dummies(persons["category"], prefix="cat")
+    features_df = pd.concat([persons[["award_year", "age_at_award"]], dummies], axis=1)
 
-    features = persons[["award_year", "age_at_award", "category_encoded"]].values
+    features = features_df.values
     scaler = StandardScaler()
     features_scaled = scaler.fit_transform(features)
 
@@ -85,27 +85,24 @@ def random_forest_category(df: pd.DataFrame) -> dict:
         subset=["age_at_award", "birth_continent", "decade"]
     ).copy()
 
-    # Encode features
-    le_gender = LabelEncoder()
-    le_continent = LabelEncoder()
+    # Target encoding
     le_category = LabelEncoder()
+    y = le_category.fit_transform(persons["category"])
 
-    persons["gender_enc"] = le_gender.fit_transform(persons["gender"])
-    persons["continent_enc"] = le_continent.fit_transform(persons["birth_continent"])
-    persons["category_enc"] = le_category.fit_transform(persons["category"])
+    # One-hot encode features
+    X_df = pd.get_dummies(persons[["gender", "birth_continent"]], drop_first=True)
+    X_df["decade"] = persons["decade"]
+    X_df["age_at_award"] = persons["age_at_award"]
+    
+    feature_labels = list(X_df.columns)
+    X = X_df.values
 
-    feature_names = ["gender_enc", "continent_enc", "decade", "age_at_award"]
-    X = persons[feature_names].values
-    y = persons["category_enc"].values
-
-    # Train model
-    rf = RandomForestClassifier(n_estimators=200, random_state=42, max_depth=10)
+    # Train model with balanced class weights
+    rf = RandomForestClassifier(n_estimators=200, random_state=42, max_depth=10, class_weight="balanced")
     cv_scores = cross_val_score(rf, X, y, cv=5, scoring="accuracy")
 
     rf.fit(X, y)
     importances = rf.feature_importances_
-
-    feature_labels = ["Gender", "Continent", "Decade", "Age at Award"]
     importance_dict = dict(zip(feature_labels, [round(x, 4) for x in importances]))
     importance_dict = dict(sorted(importance_dict.items(), key=lambda x: x[1], reverse=True))
 
@@ -184,11 +181,11 @@ def topic_modeling(df: pd.DataFrame, n_topics: int = 8) -> dict:
 class PrizeLSTM(nn.Module):
     """LSTM model for time-series prize count forecasting."""
 
-    def __init__(self, input_size=1, hidden_size=32, num_layers=2, output_size=1):
+    def __init__(self, input_size=1, hidden_size=16, num_layers=1, output_size=1):
         super().__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, dropout=0.2)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
         self.fc = nn.Sequential(
             nn.Linear(hidden_size, 16),
             nn.ReLU(),
@@ -229,13 +226,13 @@ def lstm_forecast(df: pd.DataFrame, forecast_years: int = 10, seq_length: int = 
     y = torch.FloatTensor(np.array(y_list)).unsqueeze(-1)
 
     # Train
-    model = PrizeLSTM(input_size=1, hidden_size=32, num_layers=2, output_size=1)
+    model = PrizeLSTM(input_size=1, hidden_size=16, num_layers=1, output_size=1)
     criterion = nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
     losses = []
     model.train()
-    for epoch in range(150):
+    for epoch in range(300):
         optimizer.zero_grad()
         output = model(X)
         loss = criterion(output, y)
