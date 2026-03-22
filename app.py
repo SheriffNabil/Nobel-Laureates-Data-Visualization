@@ -879,7 +879,7 @@ def _overview_tab():
         _wrap_card(dcc.Graph(figure=viz.fig_timeline_cumulative(DF)), "02 / Timeline", "timeline"),
         html.Div(style=S["grid_2"], children=[
             _wrap_card(dcc.Graph(figure=viz.fig_prizes_by_category(DF)), "03 / Categories", "categories"),
-            _wrap_card(dcc.Graph(figure=viz.fig_top_countries(DF)), "04 / Top Countries", "top_countries"),
+            _wrap_card(dcc.Graph(figure=viz.fig_top_countries(DF)), "04 / Prizes by Continent", "top_countries"),
         ]),
     ])
 

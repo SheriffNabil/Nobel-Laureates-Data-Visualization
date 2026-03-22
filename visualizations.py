@@ -147,9 +147,9 @@ def fig_top_countries(df, top_n=15):
     counts = counts.sort_values("count", ascending=True)
 
     continent_colors = {
-        "Europe": "#1A1A2E", "North America": "#FF4500",
-        "Asia": "#E8A838", "Africa": "#2ECC71",
-        "South America": "#3498DB", "Oceania": "#9B59B6",
+        "Europe": "#2C3E50", "North America": "#5D6D7E",
+        "Asia": "#85929E", "South America": "#ABB2B9",
+        "Africa": "#616A6B", "Oceania": "#AAB7B8",
     }
     colors = [continent_colors.get(c, "#888") for c in counts["birth_continent"]]
 
