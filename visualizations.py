@@ -221,9 +221,13 @@ def fig_age_violin(df):
     return fig
 
 
-def fig_age_scatter(df):
+def fig_age_scatter(df, category=None):
     """Scatter: age vs year, colored by category."""
     persons = df[~df["is_org"]].dropna(subset=["age_at_award"]).copy()
+    
+    if category and category != "All Categories":
+        persons = persons[persons["category"] == category]
+        
     fig = px.scatter(
         persons, x="award_year", y="age_at_award",
         color="category", color_discrete_map=COLORS,
@@ -231,7 +235,9 @@ def fig_age_scatter(df):
         opacity=0.65, size_max=8,
         category_orders={"category": CATEGORY_ORDER},
     )
-    _base_layout(fig, "Age at Award Over Time", 480)
+    
+    title = "Age at Award Over Time"
+    _base_layout(fig, title, 480)
     fig.update_traces(marker=dict(size=5, line=dict(width=0.5, color="#FFFFFF")))
     fig.update_layout(
         xaxis_title="Year", yaxis_title="Age at Award",

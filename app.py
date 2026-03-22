@@ -907,6 +907,10 @@ def _demographics_tab():
 
 def _trends_tab():
     _card_counter[0] = 200
+    chi = ANALYSIS.get("chi_squared", {})
+    mw = ANALYSIS.get("mann_whitney", {})
+    age_stats = ANALYSIS.get("age_distribution", {})
+
     return html.Div([
         _chapter_intro(
             "04",
@@ -915,13 +919,88 @@ def _trends_tab():
             "trends from noise. We test whether gender imbalance and age differences are "
             "statistically significant, and track how prize patterns have shifted over decades.",
         ),
+        _wrap_card([
+            html.Div(style=S["grid_3"], children=[
+                html.Div(style=S["stat_card"], children=[
+                    html.Div("Chi-Squared: Gender × Category", style={
+                        "fontFamily": "'JetBrains Mono', monospace",
+                        "fontSize": "0.75rem", "color": "#999", "marginBottom": "12px"}),
+                    html.Div(f"χ² = {chi.get('chi2_statistic', 'N/A')}", style={
+                        "fontSize": "1.5rem", "fontWeight": "520",
+                        "fontFamily": "'JetBrains Mono', monospace"}),
+                    html.Div(f"p = {chi.get('p_value', 1):.2e}" if "p_value" in chi else "", style={"color": "#666", "fontSize": "0.85rem"}),
+                    html.Div(
+                        "● Significant" if chi.get("significant") else "○ Not significant",
+                        style={"color": "#FF4500" if chi.get("significant") else "#999",
+                               "fontFamily": "'JetBrains Mono', monospace",
+                               "fontSize": "0.8rem", "marginTop": "8px"}),
+                ]),
+                html.Div(style=S["stat_card"], children=[
+                    html.Div("Mann-Whitney: Physics vs Literature", style={
+                        "fontFamily": "'JetBrains Mono', monospace",
+                        "fontSize": "0.75rem", "color": "#999", "marginBottom": "12px"}),
+                    html.Div(f"U = {mw.get('U_statistic', 'N/A')}", style={
+                        "fontSize": "1.5rem", "fontWeight": "520",
+                        "fontFamily": "'JetBrains Mono', monospace"}),
+                    html.Div(f"p = {mw.get('p_value', 1):.2e}" if "p_value" in mw else "", style={"color": "#666", "fontSize": "0.85rem"}),
+                    html.Div(
+                        "● Significant" if mw.get("significant") else "○ Not significant",
+                        style={"color": "#FF4500" if mw.get("significant") else "#999",
+                               "fontFamily": "'JetBrains Mono', monospace",
+                               "fontSize": "0.8rem", "marginTop": "8px"}),
+                    html.Div(f"Medians: {mw.get('median_1', '')} vs {mw.get('median_2', '')}y", style={
+                        "color": "#999", "fontSize": "0.75rem",
+                        "fontFamily": "'JetBrains Mono', monospace", "marginTop": "4px"}),
+                ]),
+                html.Div(style=S["stat_card"], children=[
+                    html.Div("Age Distribution", style={
+                        "fontFamily": "'JetBrains Mono', monospace",
+                        "fontSize": "0.75rem", "color": "#999", "marginBottom": "12px"}),
+                    html.Div(f"μ={age_stats.get('mean', '')}  σ={age_stats.get('std', '')}", style={
+                        "fontSize": "1.2rem", "fontWeight": "520",
+                        "fontFamily": "'JetBrains Mono', monospace"}),
+                    html.Div(f"Skew={age_stats.get('skewness', '')}  Kurt={age_stats.get('kurtosis', '')}", style={
+                        "color": "#666", "fontSize": "0.85rem",
+                        "fontFamily": "'JetBrains Mono', monospace"}),
+                    html.Div(
+                        f"{'● Normal' if age_stats.get('is_normal') else '○ Non-normal'} "
+                        f"(Shapiro p={age_stats.get('shapiro_p', 1):.2e})" if "shapiro_p" in age_stats else "",
+                        style={"color": "#FF4500" if not age_stats.get("is_normal") else "#999",
+                               "fontFamily": "'JetBrains Mono', monospace",
+                               "fontSize": "0.8rem", "marginTop": "8px"}),
+                ]),
+            ]),
+        ], "00 / Hypothesis Tests", "hypothesis_tests"),
         html.Div(style=S["grid_2"], children=[
             _wrap_card(dcc.Graph(figure=viz.fig_category_decade_heatmap(DF)), "01 / Category Heatmap", "heatmap"),
             _wrap_card(dcc.Graph(figure=viz.fig_category_trends_line(DF)), "02 / Category Trends", "category_trends"),
         ]),
         html.Div(style=S["grid_2"], children=[
             _wrap_card(dcc.Graph(figure=viz.fig_prize_amount_trend(DF)), "03 / Prize Amount Trend", "prize_amount"),
-            _wrap_card(dcc.Graph(figure=viz.fig_age_scatter(DF)), "04 / Age Over Time", "age_scatter"),
+            _wrap_card([
+                html.Div(style={
+                    "display": "flex", "alignItems": "center", "gap": "16px",
+                    "marginBottom": "16px", "marginTop": "-8px"
+                }, children=[
+                    html.Span("Category:", style={
+                        "fontFamily": "'JetBrains Mono', monospace",
+                        "fontSize": "0.8rem", "color": "#666",
+                    }),
+                    html.Div(dcc.Dropdown(
+                        id="age-scatter-category",
+                        options=[{"label": "All Categories", "value": "All Categories"}] + 
+                                [{"label": c, "value": c} for c in CATEGORIES],
+                        value="All Categories",
+                        clearable=False,
+                        style={
+                            "fontFamily": "'JetBrains Mono', monospace",
+                            "fontSize": "0.85rem",
+                            "minWidth": "160px"
+                        },
+                    ), style={"flex": "1"}),
+                ]),
+                dcc.Graph(id="age-scatter-graph", figure=viz.fig_age_scatter(DF), config={"scrollZoom": True})
+            ], "04 / Age Over Time", "age_scatter_card"),
         ]),
     ])
 
@@ -1295,6 +1374,14 @@ def update_gallery(tab, prev_clicks, next_clicks, search, category, decade, birt
         
     page_info = f"Page {current_page} of {max_pages} · {total_items} results"
     return cards, page_info, current_page
+
+
+@app.callback(
+    Output("age-scatter-graph", "figure"),
+    Input("age-scatter-category", "value")
+)
+def update_age_scatter(category):
+    return viz.fig_age_scatter(DF, category=category)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
