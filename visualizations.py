@@ -142,23 +142,36 @@ def fig_prizes_by_category(df):
 
 
 def fig_top_countries(df, top_n=15):
-    """Top N countries bar chart."""
-    counts = df.groupby("birth_country").size().reset_index(name="count")
-    counts = counts.sort_values("count", ascending=True).tail(top_n)
-    fig = go.Figure(go.Bar(
-        x=counts["count"],
-        y=counts["birth_country"],
-        orientation="h",
-        marker=dict(
-            color="#000000",
-            line=dict(width=0),
-        ),
-        text=counts["count"],
-        textposition="outside",
-        textfont=dict(family="JetBrains Mono, monospace", size=11),
-    ))
+    """Top N countries bar chart, colored by continent."""
+    merged = df.groupby(["birth_country", "birth_continent"]).size().reset_index(name="count")
+    merged = merged.sort_values("count", ascending=True).tail(top_n)
+
+    continent_colors = {
+        "Europe": "#1A1A2E", "North America": "#FF4500",
+        "Asia": "#E8A838", "Africa": "#2ECC71",
+        "South America": "#3498DB", "Oceania": "#9B59B6",
+    }
+
+    fig = go.Figure()
+    for continent in merged["birth_continent"].unique():
+        subset = merged[merged["birth_continent"] == continent]
+        fig.add_trace(go.Bar(
+            x=subset["count"],
+            y=subset["birth_country"],
+            orientation="h",
+            name=continent,
+            marker=dict(color=continent_colors.get(continent, "#888"), line=dict(width=0)),
+            text=subset["count"],
+            textposition="outside",
+            textfont=dict(family="JetBrains Mono, monospace", size=11),
+        ))
+
     _base_layout(fig, f"Top {top_n} Countries", 480)
-    fig.update_layout(xaxis_title="Number of Prizes", yaxis_title="")
+    fig.update_layout(
+        xaxis_title="Number of Prizes", yaxis_title="",
+        barmode="stack",
+        legend=dict(orientation="h", yanchor="bottom", y=1.0, xanchor="left", x=0),
+    )
     return fig
 
 
