@@ -1027,10 +1027,15 @@ def _ml_tab():
             
             _wrap_card([
                 html.Div(
-                    f"Accuracy: {rf['cv_accuracy_mean']:.1%} (Random baseline: 16.7%). "
-                    "Conclusion: Demographics are poor predictors of scientific fields.",
-                    style={"color": "#FF4500", "marginBottom": "12px",
+                    f"Accuracy: {rf['cv_accuracy_mean']:.1%} (Random baseline: 16.7%)",
+                    style={"color": "#FF4500", "marginBottom": "6px",
                            "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.80rem"}),
+                html.P(
+                    "Science is universal. Whether you are an 80-year-old from North America "
+                    "or a 30-year-old from Asia, demographics alone cannot predict your scientific "
+                    "discipline — and this model proves it mathematically.",
+                    style={"color": "#666", "fontSize": "0.85rem", "lineHeight": "1.6",
+                           "marginBottom": "16px", "marginTop": "0", "maxWidth": "600px"}),
                 dcc.Graph(figure=viz.fig_feature_importances(rf)),
             ], "02 / RF Feature Validation", "random_forest"),
         ]),
