@@ -586,11 +586,33 @@ def fig_multi_laureates(df):
         _base_layout(fig, "Multi-Prize Laureates", 300)
         return fig
 
+    # Abbreviate long organization names
+    _ABBR = {
+        "International Committee of the Red Cross": "ICRC",
+        "Office of the United Nations High Commissioner for Refugees": "UNHCR",
+        "United Nations High Commissioner for Refugees": "UNHCR",
+        "Médecins Sans Frontières": "MSF",
+        "International Atomic Energy Agency": "IAEA",
+        "International Campaign to Abolish Nuclear Weapons": "ICAN",
+        "Intergovernmental Panel on Climate Change": "IPCC",
+        "European Union": "EU",
+        "United Nations": "UN",
+        "United Nations Children's Fund": "UNICEF",
+        "International Labour Organization": "ILO",
+        "Organisation for the Prohibition of Chemical Weapons": "OPCW",
+        "Pugwash Conferences on Science and World Affairs": "Pugwash Conf.",
+        "American Friends Service Committee": "AFSC",
+        "Institut de Droit International": "IDI",
+        "International Peace Bureau": "IPB",
+    }
+
     details = df[df["id"].isin(multi["id"])].copy()
+    details["display_name"] = details["name"].map(lambda n: _ABBR.get(n, n))
+
     fig = px.scatter(
-        details, x="award_year", y="name", color="category",
+        details, x="award_year", y="display_name", color="category",
         color_discrete_map=COLORS, size_max=15,
-        hover_data=["motivation"],
+        hover_data={"name": True, "motivation": True, "display_name": False},
     )
     _base_layout(fig, "Multi-Prize Laureates", 350)
     fig.update_traces(marker=dict(size=14, line=dict(width=1, color="#FFFFFF")))
