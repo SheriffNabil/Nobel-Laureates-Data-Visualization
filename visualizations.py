@@ -121,49 +121,32 @@ def fig_timeline_cumulative(df):
     return fig
 
 
-def fig_prizes_by_category(df):
-    """Horizontal bar chart of total prizes per category."""
-    counts = df.groupby("category").size().reset_index(name="count").sort_values("count")
-    fig = go.Figure(go.Bar(
-        x=counts["count"],
-        y=counts["category"],
-        orientation="h",
-        marker=dict(
-            color=[COLORS.get(c, "#888") for c in counts["category"]],
-            line=dict(width=1, color="#000000"),
-        ),
-        text=counts["count"],
-        textposition="outside",
-        textfont=dict(family="JetBrains Mono, monospace", size=12),
-    ))
-    _base_layout(fig, "Total Prizes by Category", 380)
-    fig.update_layout(xaxis_title="Number of Prizes", yaxis_title="")
-    return fig
+def fig_category_continent(df):
+    """Stacked horizontal bar: continents on Y-axis, segments by category."""
+    ct = pd.crosstab(df["birth_continent"], df["category"])
+    # Sort continents by total prizes
+    ct = ct.loc[ct.sum(axis=1).sort_values().index]
 
-
-def fig_top_countries(df, top_n=15):
-    """Prizes by continent bar chart."""
-    counts = df.groupby("birth_continent").size().reset_index(name="count")
-    counts = counts.sort_values("count", ascending=True)
-
-    continent_colors = {
-        "Europe": "#2C3E50", "North America": "#5D6D7E",
-        "Asia": "#85929E", "South America": "#ABB2B9",
-        "Africa": "#616A6B", "Oceania": "#AAB7B8",
-    }
-    colors = [continent_colors.get(c, "#888") for c in counts["birth_continent"]]
-
-    fig = go.Figure(go.Bar(
-        x=counts["count"],
-        y=counts["birth_continent"],
-        orientation="h",
-        marker=dict(color=colors, line=dict(width=0)),
-        text=counts["count"],
-        textposition="outside",
-        textfont=dict(family="JetBrains Mono, monospace", size=11),
-    ))
-    _base_layout(fig, "Prizes by Continent", 400)
-    fig.update_layout(xaxis_title="Number of Prizes", yaxis_title="", showlegend=False)
+    fig = go.Figure()
+    for cat in CATEGORY_ORDER:
+        if cat in ct.columns:
+            fig.add_trace(go.Bar(
+                y=ct.index,
+                x=ct[cat],
+                name=cat,
+                orientation="h",
+                marker=dict(color=COLORS.get(cat, "#888"), line=dict(width=0.5, color="#FFFFFF")),
+                text=ct[cat],
+                textposition="inside",
+                textfont=dict(family="JetBrains Mono, monospace", size=10, color="#FFFFFF"),
+                insidetextanchor="middle",
+            ))
+    _base_layout(fig, "Prizes: Continent × Category", 420)
+    fig.update_layout(
+        barmode="stack",
+        xaxis_title="Number of Prizes", yaxis_title="",
+        legend=dict(orientation="h", yanchor="bottom", y=1.0, xanchor="left", x=0),
+    )
     return fig
 
 
