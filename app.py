@@ -1065,16 +1065,13 @@ def _deep_tab():
             "06",
             "What stories hide in the connections between countries and fields?",
             "We go deeper with advanced visualizations — tracing the flow of laureates across continents, "
-            "breaking down the hierarchy of regions and categories, and spotlighting "
+            "uncovering correlations in the data, and spotlighting "
             "the rare few who achieved the extraordinary distinction of winning twice.",
         ),
+        _wrap_card(dcc.Graph(figure=viz.fig_sankey(DF)), "01 / Continent → Category Flow", "sankey"),
         html.Div(style=S["grid_2"], children=[
-            _wrap_card(dcc.Graph(figure=viz.fig_sankey(DF)), "01 / Continent → Category Flow", "sankey"),
-            _wrap_card(dcc.Graph(figure=viz.fig_sunburst(DF)), "02 / Hierarchy", "sunburst"),
-        ]),
-        html.Div(style=S["grid_2"], children=[
-            _wrap_card(dcc.Graph(figure=viz.fig_correlation_heatmap(ANALYSIS["correlations"])), "03 / Correlations", "correlations"),
-            _wrap_card(dcc.Graph(figure=viz.fig_multi_laureates(DF)), "04 / Multi-Prize Laureates", "multi_laureates"),
+            _wrap_card(dcc.Graph(figure=viz.fig_correlation_heatmap(ANALYSIS["correlations"])), "02 / Correlations", "correlations"),
+            _wrap_card(dcc.Graph(figure=viz.fig_multi_laureates(DF)), "03 / Multi-Prize Laureates", "multi_laureates"),
         ]),
     ])
 
