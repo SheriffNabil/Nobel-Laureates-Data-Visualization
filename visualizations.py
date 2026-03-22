@@ -13,15 +13,15 @@ from plotly.subplots import make_subplots
 # ── MiroFish Color Palette — monochrome with orange accent ────────────────────
 
 COLORS = {
-    "Physics": "#1A1A2E",
-    "Chemistry": "#E63946",
-    "Physiology or Medicine": "#2A9D8F",
-    "Literature": "#E9C46A",
-    "Peace": "#264653",
-    "Economic Sciences": "#F4A261",
+    "Physics": "#4A7C8A",
+    "Chemistry": "#8B6E5A",
+    "Physiology or Medicine": "#5B8F6A",
+    "Literature": "#9B7BA8",
+    "Peace": "#6A8EAE",
+    "Economic Sciences": "#C4956A",
 }
 
-CATEGORY_COLORS_SEQ = ["#1A1A2E", "#E63946", "#2A9D8F", "#E9C46A", "#264653", "#F4A261"]
+CATEGORY_COLORS_SEQ = ["#4A7C8A", "#8B6E5A", "#5B8F6A", "#9B7BA8", "#6A8EAE", "#C4956A"]
 
 CATEGORY_ORDER = list(COLORS.keys())
 
