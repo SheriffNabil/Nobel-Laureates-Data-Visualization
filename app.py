@@ -1012,8 +1012,8 @@ def _ml_tab():
         _chapter_intro(
             "05",
             "Can machines learn the formula behind a Nobel Prize?",
-            "We unleash machine learning and deep learning on the data — clustering laureates "
-            "into hidden groups, predicting prize categories from demographics, mining the language "
+            "We unleash machine learning on the data — clustering laureates into hidden groups, "
+            "proving that demographics alone cannot predict a scientist's field, mining the language "
             "of prize motivations, and forecasting the future with neural networks.",
         ),
         html.Div(style=S["grid_2"], children=[
@@ -1027,11 +1027,12 @@ def _ml_tab():
             
             _wrap_card([
                 html.Div(
-                    f"5-fold CV accuracy: {rf['cv_accuracy_mean']:.1%} ± {rf['cv_accuracy_std']:.1%}",
-                    style={"color": "#666", "marginBottom": "12px",
-                           "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
+                    f"Accuracy: {rf['cv_accuracy_mean']:.1%} (Random baseline: 16.7%). "
+                    "Conclusion: Demographics are poor predictors of scientific fields.",
+                    style={"color": "#FF4500", "marginBottom": "12px",
+                           "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.80rem"}),
                 dcc.Graph(figure=viz.fig_feature_importances(rf)),
-            ], "02 / Random Forest Categories", "random_forest"),
+            ], "02 / RF Feature Validation", "random_forest"),
         ]),
         html.Div(style=S["grid_2"], children=[
             _wrap_card([

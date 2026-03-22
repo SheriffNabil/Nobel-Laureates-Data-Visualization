@@ -487,7 +487,7 @@ def fig_feature_importances(rf_result):
         textposition="outside",
         textfont=dict(family="JetBrains Mono, monospace", size=11),
     ))
-    _base_layout(fig, f"Feature Importances (Acc: {rf_result['cv_accuracy_mean']:.1%})", 350)
+    _base_layout(fig, f"Demographic Feature Importance (Acc: {rf_result['cv_accuracy_mean']:.1%})", 350)
     fig.update_layout(xaxis_title="Importance", yaxis_title="")
     return fig
 
