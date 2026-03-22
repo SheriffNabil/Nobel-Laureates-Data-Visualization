@@ -122,29 +122,36 @@ def fig_timeline_cumulative(df):
 
 
 def fig_category_continent(df):
-    """Stacked horizontal bar: continents on Y-axis, segments by category."""
+    """100% stacked horizontal bar: continents on Y-axis, segments by category."""
     ct = pd.crosstab(df["birth_continent"], df["category"])
     # Sort continents by total prizes
-    ct = ct.loc[ct.sum(axis=1).sort_values().index]
+    totals = ct.sum(axis=1)
+    ct = ct.loc[totals.sort_values().index]
+    totals = totals.loc[ct.index]
+    # Normalize to percentages
+    ct_pct = ct.div(totals, axis=0) * 100
 
     fig = go.Figure()
     for cat in CATEGORY_ORDER:
-        if cat in ct.columns:
+        if cat in ct_pct.columns:
             fig.add_trace(go.Bar(
-                y=ct.index,
-                x=ct[cat],
+                y=ct_pct.index,
+                x=ct_pct[cat],
                 name=cat,
                 orientation="h",
                 marker=dict(color=COLORS.get(cat, "#888"), line=dict(width=0.5, color="#FFFFFF")),
-                text=ct[cat],
+                text=[f"{v:.0f}%" if v >= 5 else "" for v in ct_pct[cat]],
                 textposition="inside",
                 textfont=dict(family="JetBrains Mono, monospace", size=10, color="#FFFFFF"),
                 insidetextanchor="middle",
+                customdata=ct[cat],
+                hovertemplate="%{y}<br>%{fullData.name}: %{customdata} prizes (%{x:.1f}%)<extra></extra>",
             ))
     _base_layout(fig, "Prizes: Continent × Category", 420)
     fig.update_layout(
         barmode="stack",
-        xaxis_title="Number of Prizes", yaxis_title="",
+        xaxis_title="% of Prizes", yaxis_title="",
+        xaxis=dict(range=[0, 100], ticksuffix="%"),
         legend=dict(orientation="h", yanchor="bottom", y=1.0, xanchor="left", x=0),
     )
     return fig
