@@ -876,13 +876,10 @@ def _overview_tab():
             "categories, and time. The patterns of geographic dominance become immediately clear.",
         ),
         _wrap_card(dcc.Graph(figure=viz.fig_globe_3d(DF), config={"scrollZoom": True}), "01 / 3D Globe — World Distribution", "globe_3d"),
+        _wrap_card(dcc.Graph(figure=viz.fig_timeline_cumulative(DF)), "02 / Timeline", "timeline"),
         html.Div(style=S["grid_2"], children=[
-            _wrap_card(dcc.Graph(figure=viz.fig_timeline_cumulative(DF)), "02 / Timeline", "timeline"),
             _wrap_card(dcc.Graph(figure=viz.fig_prizes_by_category(DF)), "03 / Categories", "categories"),
-        ]),
-        html.Div(style=S["grid_2"], children=[
             _wrap_card(dcc.Graph(figure=viz.fig_top_countries(DF)), "04 / Top Countries", "top_countries"),
-            _wrap_card(dcc.Graph(figure=viz.fig_sunburst(DF)), "05 / Hierarchy", "sunburst"),
         ]),
     ])
 
@@ -901,12 +898,10 @@ def _demographics_tab():
             _wrap_card(dcc.Graph(figure=viz.fig_gender_decade(DF)), "01 / Gender × Decade", "gender_decade"),
             _wrap_card(dcc.Graph(figure=viz.fig_gender_pct_trend(DF)), "02 / Female % Trend", "gender_trend"),
         ]),
-        _wrap_card(dcc.Graph(figure=viz.fig_age_scatter(DF)), "03 / Age Over Time", "age_scatter"),
         html.Div(style=S["grid_2"], children=[
-            _wrap_card(dcc.Graph(figure=viz.fig_age_violin(DF)), "04 / Age Distribution", "age_violin"),
-            _wrap_card(dcc.Graph(figure=viz.fig_age_histogram(DF)), "05 / Age Histogram", "age_histogram"),
+            _wrap_card(dcc.Graph(figure=viz.fig_age_violin(DF)), "03 / Age Distribution", "age_violin"),
+            _wrap_card(dcc.Graph(figure=viz.fig_lifespan_box(DF)), "04 / Lifespan", "lifespan"),
         ]),
-        _wrap_card(dcc.Graph(figure=viz.fig_lifespan_box(DF)), "06 / Lifespan", "lifespan"),
     ])
 
 
@@ -920,82 +915,19 @@ def _trends_tab():
             "trends from noise. We test whether gender imbalance and age differences are "
             "statistically significant, and track how prize patterns have shifted over decades.",
         ),
-        _wrap_card([
-            html.Div(style=S["grid_3"], children=[
-                html.Div(style=S["stat_card"], children=[
-                    html.Div("Chi-Squared: Gender × Category", style={
-                        "fontFamily": "'JetBrains Mono', monospace",
-                        "fontSize": "0.75rem", "color": "#999", "marginBottom": "12px"}),
-                    html.Div(f"χ² = {chi['chi2_statistic']}", style={
-                        "fontSize": "1.5rem", "fontWeight": "520",
-                        "fontFamily": "'JetBrains Mono', monospace"}),
-                    html.Div(f"p = {chi['p_value']:.2e}", style={"color": "#666", "fontSize": "0.85rem"}),
-                    html.Div(
-                        "● Significant" if chi["significant"] else "○ Not significant",
-                        style={"color": "#FF4500" if chi["significant"] else "#999",
-                               "fontFamily": "'JetBrains Mono', monospace",
-                               "fontSize": "0.8rem", "marginTop": "8px"}),
-                ]),
-                html.Div(style=S["stat_card"], children=[
-                    html.Div("Mann-Whitney: Physics vs Literature", style={
-                        "fontFamily": "'JetBrains Mono', monospace",
-                        "fontSize": "0.75rem", "color": "#999", "marginBottom": "12px"}),
-                    html.Div(f"U = {mw['U_statistic']}", style={
-                        "fontSize": "1.5rem", "fontWeight": "520",
-                        "fontFamily": "'JetBrains Mono', monospace"}),
-                    html.Div(f"p = {mw['p_value']:.2e}", style={"color": "#666", "fontSize": "0.85rem"}),
-                    html.Div(
-                        "● Significant" if mw["significant"] else "○ Not significant",
-                        style={"color": "#FF4500" if mw["significant"] else "#999",
-                               "fontFamily": "'JetBrains Mono', monospace",
-                               "fontSize": "0.8rem", "marginTop": "8px"}),
-                    html.Div(f"Medians: {mw['median_1']} vs {mw['median_2']}y", style={
-                        "color": "#999", "fontSize": "0.75rem",
-                        "fontFamily": "'JetBrains Mono', monospace", "marginTop": "4px"}),
-                ]),
-                html.Div(style=S["stat_card"], children=[
-                    html.Div("Age Distribution", style={
-                        "fontFamily": "'JetBrains Mono', monospace",
-                        "fontSize": "0.75rem", "color": "#999", "marginBottom": "12px"}),
-                    html.Div(f"μ={age_stats['mean']}  σ={age_stats['std']}", style={
-                        "fontSize": "1.2rem", "fontWeight": "520",
-                        "fontFamily": "'JetBrains Mono', monospace"}),
-                    html.Div(f"Skew={age_stats['skewness']}  Kurt={age_stats['kurtosis']}", style={
-                        "color": "#666", "fontSize": "0.85rem",
-                        "fontFamily": "'JetBrains Mono', monospace"}),
-                    html.Div(
-                        f"{'● Normal' if age_stats['is_normal'] else '○ Non-normal'} "
-                        f"(Shapiro p={age_stats['shapiro_p']:.2e})",
-                        style={"color": "#FF4500" if not age_stats["is_normal"] else "#999",
-                               "fontFamily": "'JetBrains Mono', monospace",
-                               "fontSize": "0.8rem", "marginTop": "8px"}),
-                ]),
-            ]),
-        ], "Hypothesis Tests", "hypothesis_tests"),
-
-        _wrap_card(dcc.Graph(figure=viz.fig_regression_scatter(reg, DF)),
-                   f"OLS Regression  /  slope={reg['slope']:.4f}  R²={reg['r_squared']:.4f}",
-                   "regression"),
-
         html.Div(style=S["grid_2"], children=[
-            _wrap_card(dcc.Graph(figure=viz.fig_category_decade_heatmap(DF)), "Heatmap", "heatmap"),
-            _wrap_card(dcc.Graph(figure=viz.fig_correlation_heatmap(ANALYSIS["correlations"])),
-                       "Correlations", "correlations"),
+            _wrap_card(dcc.Graph(figure=viz.fig_category_decade_heatmap(DF)), "01 / Category Heatmap", "heatmap"),
+            _wrap_card(dcc.Graph(figure=viz.fig_category_trends_line(DF)), "02 / Category Trends", "category_trends"),
         ]),
         html.Div(style=S["grid_2"], children=[
-            _wrap_card(dcc.Graph(figure=viz.fig_prize_amount_trend(DF)), "Prize Amount Trend", "prize_amount"),
-            _wrap_card(dcc.Graph(figure=viz.fig_category_trends_line(DF)), "Category Trends", "category_trends"),
+            _wrap_card(dcc.Graph(figure=viz.fig_prize_amount_trend(DF)), "03 / Prize Amount Trend", "prize_amount"),
+            _wrap_card(dcc.Graph(figure=viz.fig_age_scatter(DF)), "04 / Age Over Time", "age_scatter"),
         ]),
     ])
 
 
 def _ml_tab():
     _card_counter[0] = 300
-    topic_figs = []
-    for i in range(min(4, len(tp["topics"]))):
-        topic_figs.append(
-            _wrap_card(dcc.Graph(figure=viz.fig_topic_words(tp, i)))
-        )
 
     return html.Div([
         _chapter_intro(
@@ -1005,47 +937,39 @@ def _ml_tab():
             "into hidden groups, predicting prize categories from demographics, mining the language "
             "of prize motivations, and forecasting the future with neural networks.",
         ),
-        _wrap_card([
-            html.Div(
-                f"Grouped {len(cl['data'])} laureates into {cl['n_clusters']} clusters. "
-                f"Silhouette = {cl['best_silhouette']:.4f}",
-                style={"color": "#666", "marginBottom": "12px",
-                       "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
-        ], "01 / K-Means Clustering", "kmeans"),
         html.Div(style=S["grid_2"], children=[
-            _wrap_card(dcc.Graph(figure=viz.fig_clusters(cl)), insight_key="kmeans"),
-            _wrap_card(dcc.Graph(figure=viz.fig_silhouette_scores(cl)), insight_key="silhouette"),
+            _wrap_card([
+                html.Div(
+                    f"Grouped {len(cl['data'])} laureates into {cl['n_clusters']} clusters.",
+                    style={"color": "#666", "marginBottom": "12px",
+                           "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
+                dcc.Graph(figure=viz.fig_clusters(cl)),
+            ], "01 / K-Means Clustering", "kmeans"),
+            
+            _wrap_card([
+                html.Div(
+                    f"5-fold CV accuracy: {rf['cv_accuracy_mean']:.1%} ± {rf['cv_accuracy_std']:.1%}",
+                    style={"color": "#666", "marginBottom": "12px",
+                           "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
+                dcc.Graph(figure=viz.fig_feature_importances(rf)),
+            ], "02 / Random Forest Categories", "random_forest"),
         ]),
-
-        _wrap_card([
-            html.Div(
-                f"5-fold CV accuracy: {rf['cv_accuracy_mean']:.1%} ± {rf['cv_accuracy_std']:.1%}  ·  "
-                f"{rf['n_samples']} samples  ·  {len(rf['categories'])} categories",
-                style={"color": "#666", "marginBottom": "12px",
-                       "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
-            dcc.Graph(figure=viz.fig_feature_importances(rf)),
-        ], "02 / Random Forest Classification", "random_forest"),
-
-        _wrap_card([
-            html.Div(
-                f"{len(tp['topics'])} topics from {tp['n_documents']} motivations  ·  "
-                f"{tp['explained_variance']}% variance explained",
-                style={"color": "#666", "marginBottom": "12px",
-                       "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
-            dcc.Graph(figure=viz.fig_topic_heatmap(tp)),
-        ], "03 / NLP Topic Modeling", "nlp_topics"),
-        html.Div(style=S["grid_2"], children=topic_figs[:4]),
-
-        _wrap_card([
-            html.Div(
-                f"2-layer LSTM  ·  Final MSE: {fc['final_loss']:.6f}  ·  "
-                f"Forecasting {len(fc['forecast_years'])} years ahead",
-                style={"color": "#666", "marginBottom": "12px",
-                       "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
-        ], "04 / LSTM Forecasting (PyTorch)", "lstm_forecast"),
         html.Div(style=S["grid_2"], children=[
-            _wrap_card(dcc.Graph(figure=viz.fig_lstm_forecast(fc)), insight_key="lstm_forecast"),
-            _wrap_card(dcc.Graph(figure=viz.fig_training_loss(fc)), insight_key="training_loss"),
+            _wrap_card([
+                html.Div(
+                    f"{tp['explained_variance']}% variance explained",
+                    style={"color": "#666", "marginBottom": "12px",
+                           "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
+                dcc.Graph(figure=viz.fig_topic_heatmap(tp)),
+            ], "03 / NLP Topic Modeling", "nlp_topics"),
+
+            _wrap_card([
+                html.Div(
+                    f"1-layer LSTM forecasting {len(fc['forecast_years'])} years ahead",
+                    style={"color": "#666", "marginBottom": "12px",
+                           "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.85rem"}),
+                dcc.Graph(figure=viz.fig_lstm_forecast(fc)),
+            ], "04 / LSTM Forecasting", "lstm_forecast"),
         ]),
     ])
 
@@ -1060,9 +984,14 @@ def _deep_tab():
             "breaking down the hierarchy of regions and categories, and spotlighting "
             "the rare few who achieved the extraordinary distinction of winning twice.",
         ),
-        _wrap_card(dcc.Graph(figure=viz.fig_sankey(DF)), "01 / Continent → Category Flow", "sankey"),
-        _wrap_card(dcc.Graph(figure=viz.fig_treemap(DF)), "02 / Treemap", "treemap"),
-        _wrap_card(dcc.Graph(figure=viz.fig_multi_laureates(DF)), "03 / Multi-Prize Laureates", "multi_laureates"),
+        html.Div(style=S["grid_2"], children=[
+            _wrap_card(dcc.Graph(figure=viz.fig_sankey(DF)), "01 / Continent → Category Flow", "sankey"),
+            _wrap_card(dcc.Graph(figure=viz.fig_sunburst(DF)), "02 / Hierarchy", "sunburst"),
+        ]),
+        html.Div(style=S["grid_2"], children=[
+            _wrap_card(dcc.Graph(figure=viz.fig_correlation_heatmap(ANALYSIS["correlations"])), "03 / Correlations", "correlations"),
+            _wrap_card(dcc.Graph(figure=viz.fig_multi_laureates(DF)), "04 / Multi-Prize Laureates", "multi_laureates"),
+        ]),
     ])
 
 
