@@ -1031,9 +1031,11 @@ def _ml_tab():
                     style={"color": "#FF4500", "marginBottom": "6px",
                            "fontFamily": "'JetBrains Mono', monospace", "fontSize": "0.80rem"}),
                 html.P(
-                    "Science is universal. Whether you are an 80-year-old from North America "
-                    "or a 30-year-old from Asia, demographics alone cannot predict your scientific "
-                    "discipline — and this model proves it mathematically.",
+                    "Age is the strongest demographic clue — Peace laureates trend younger "
+                    "(e.g. Malala Yousafzai at 17) while Economics winners are almost exclusively "
+                    "senior academics (avg. ~67) — yet even this signal is far too weak. "
+                    "Science is universal: demographics alone cannot predict your scientific "
+                    "discipline, and this model proves it mathematically.",
                     style={"color": "#666", "fontSize": "0.85rem", "lineHeight": "1.6",
                            "marginBottom": "16px", "marginTop": "0", "maxWidth": "600px"}),
                 dcc.Graph(figure=viz.fig_feature_importances(rf)),
