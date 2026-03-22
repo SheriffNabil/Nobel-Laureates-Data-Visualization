@@ -1113,29 +1113,29 @@ def _gallery_tab():
                 
                 # Filters
                 html.Div(style={
-                    "display": "flex", "gap": "16px", "marginBottom": "24px",
-                    "flexWrap": "wrap", "background": "#FAFAFA", "padding": "16px",
+                    "display": "grid", "gridTemplateColumns": "repeat(5, 1fr)", "gap": "16px",
+                    "marginBottom": "24px", "background": "#FAFAFA", "padding": "16px",
                     "border": "1px solid #EAEAEA", "borderRadius": "8px"
                 }, children=[
                     html.Div([
                         html.Span("Search Name or Work:", style={"display": "block", "fontSize": "0.75rem", "fontFamily": "'JetBrains Mono', monospace", "color": "#666", "marginBottom": "4px"}),
-                        dcc.Input(id="gallery-search", type="text", placeholder="e.g. Einstein", style={"padding": "8px", "width": "200px", "border": "1px solid #CCC", "borderRadius": "4px", "fontFamily": "inherit"})
+                        dcc.Input(id="gallery-search", type="text", placeholder="e.g. Einstein", style={"padding": "8px", "width": "100%", "border": "1px solid #CCC", "borderRadius": "4px", "fontFamily": "inherit", "boxSizing": "border-box"})
                     ]),
                     html.Div([
                         html.Span("Category:", style={"display": "block", "fontSize": "0.75rem", "fontFamily": "'JetBrains Mono', monospace", "color": "#666", "marginBottom": "4px"}),
-                        dcc.Dropdown(id="gallery-category", options=[{"label": "All", "value": "All"}] + categories, value="All", clearable=False, style={"width": "180px"})
+                        dcc.Dropdown(id="gallery-category", options=[{"label": "All", "value": "All"}] + categories, value="All", clearable=False, style={"width": "100%"})
                     ]),
                     html.Div([
                         html.Span("Decade:", style={"display": "block", "fontSize": "0.75rem", "fontFamily": "'JetBrains Mono', monospace", "color": "#666", "marginBottom": "4px"}),
-                        dcc.Dropdown(id="gallery-decade", options=[{"label": "All", "value": "All"}] + decades, value="All", clearable=False, style={"width": "120px"})
+                        dcc.Dropdown(id="gallery-decade", options=[{"label": "All", "value": "All"}] + decades, value="All", clearable=False, style={"width": "100%"})
                     ]),
                     html.Div([
                         html.Span("Birth Country:", style={"display": "block", "fontSize": "0.75rem", "fontFamily": "'JetBrains Mono', monospace", "color": "#666", "marginBottom": "4px"}),
-                        dcc.Dropdown(id="gallery-birth-country", options=[{"label": "All", "value": "All"}] + birth_countries, value="All", clearable=False, style={"width": "180px"})
+                        dcc.Dropdown(id="gallery-birth-country", options=[{"label": "All", "value": "All"}] + birth_countries, value="All", clearable=False, style={"width": "100%"})
                     ]),
                     html.Div([
                         html.Span("Nationality:", style={"display": "block", "fontSize": "0.75rem", "fontFamily": "'JetBrains Mono', monospace", "color": "#666", "marginBottom": "4px"}),
-                        dcc.Dropdown(id="gallery-nationality", options=[{"label": "All", "value": "All"}] + nationalities, value="All", clearable=False, style={"width": "180px"})
+                        dcc.Dropdown(id="gallery-nationality", options=[{"label": "All", "value": "All"}] + nationalities, value="All", clearable=False, style={"width": "100%"})
                     ]),
                 ]),
                 
